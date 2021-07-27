@@ -1,4 +1,8 @@
+'use strict';
+
 const { Client, Collection } = require("discord.js");
+const YAML = require('yamljs');
+const { resolve } = require('path');
 
 const client = new Client({
     intents: [
@@ -18,14 +22,22 @@ const client = new Client({
         "DIRECT_MESSAGE_REACTIONS",
         "DIRECT_MESSAGE_TYPING",
     ],
+    partials: [
+        'CHANNEL',
+        'GUILD_MEMBER',
+        'MESSAGE',
+        'USER',
+        'REACTION',
+    ],
 });
 module.exports = client;
 
 // Global Variables
 client.commands = new Collection();
-client.config = require("./config.json");
+client.slashCommands = new Collection();
+client.config = YAML.load(resolve(__dirname, './config/settings.yml'))
 
 // Initializing the project
 require("./handler")(client);
 
-client.login(client.config.token);
+client.login(client.config.settings.DISCORD_TOKEN);
